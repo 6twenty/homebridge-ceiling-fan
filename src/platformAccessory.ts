@@ -51,7 +51,12 @@ export class CeilingFanAccessory {
     this.lightService.getCharacteristic(this.platform.Characteristic.On)
       .onSet(this.setLightOn.bind(this))
 
-    this.tuyaClient = new TuyAPI({ id: this.deviceID, key: this.localKey, ip: this.ipAddress })
+    this.tuyaClient = new TuyAPI({
+      id: this.deviceID,
+      key: this.localKey,
+      ip: this.ipAddress,
+      version: "3.3"
+    })
 
     this.tuyaClient.on("connected", () => {
       this.platform.log.debug("Tuya Device Connected ->", this.accessory.displayName)
