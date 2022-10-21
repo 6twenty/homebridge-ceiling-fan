@@ -1,17 +1,9 @@
 {
   "private": true,
-  "displayName": "Plugin Name",
-  "name": "homebridge-plugin-name",
+  "name": "homebridge-ceiling-fan",
   "version": "1.0.0",
-  "description": "A short description about what your plugin does.",
+  "description": "",
   "license": "Apache-2.0",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/USERNAME/GITHUB_PROJECT_NAME.git"
-  },
-  "bugs": {
-    "url": "https://github.com/USERNAME/GITHUB_PROJECT_NAME/issues"
-  },
   "engines": {
     "node": ">=14.18.1",
     "homebridge": ">=1.3.5"

@@ -1,5 +1,5 @@
 {
-  "pluginAlias": "ExampleHomebridgePlugin",
+  "pluginAlias": "CeilingFanPlatform",
   "pluginType": "platform",
   "singular": true,
   "schema": {
