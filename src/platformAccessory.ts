@@ -1,33 +1,32 @@
 import { Service, PlatformAccessory, CharacteristicValue } from "homebridge"
+import TuyAPI from "tuyapi"
 
 import { CeilingFanPlatform } from "./platform"
 
-/**
- * Platform Accessory
- * An instance of this class is created for each accessory your platform registers
- * Each accessory may expose multiple services of different service types.
- */
+const DATA_POINTS = {
+  "on": "1",
+  "speed": "3",
+  "direction": "4",
+  "light": "9"
+}
+
 export class CeilingFanAccessory {
   private fanService: Service
   private lightService: Service
-
-  /**
-   * These are just used to create a working example
-   * You should implement your own code to track the state of your accessory
-   */
-  private exampleStates = {
-    On: false,
-    Brightness: 100,
-  }
+  private tuyaClient
+  private dps = {}
 
   constructor(
     private readonly platform: CeilingFanPlatform,
     private readonly accessory: PlatformAccessory,
+    private readonly deviceID,
+    private readonly localKey,
+    private readonly ipAddress
   ) {
 
     this.accessory.getService(this.platform.Service.AccessoryInformation)!
-      .setCharacteristic(this.platform.Characteristic.Manufacturer, "Brilliant")
-      .setCharacteristic(this.platform.Characteristic.Model, "WiFi DC Ceiling Fan")
+      .setCharacteristic(this.platform.Characteristic.Manufacturer, "Brilliant Smart")
+      .setCharacteristic(this.platform.Characteristic.Model, "DC Ceiling Fan BAHAMA")
       .setCharacteristic(this.platform.Characteristic.SerialNumber, "20918")
 
     this.fanService = this.accessory.getService(this.platform.Service.Fan) ||
@@ -41,118 +40,129 @@ export class CeilingFanAccessory {
 
     this.fanService.getCharacteristic(this.platform.Characteristic.On)
       .onSet(this.setFanOn.bind(this))
-      .onGet(this.getFanOn.bind(this))
 
     this.fanService.getCharacteristic(this.platform.Characteristic.RotationDirection)
       .onSet(this.setFanRotationDirection.bind(this))
-      .onGet(this.getFanRotationDirection.bind(this))
 
     this.fanService.getCharacteristic(this.platform.Characteristic.RotationSpeed)
       .setProps({ minStep: 20 })
       .onSet(this.setFanRotationSpeed.bind(this))
-      .onGet(this.getFanRotationSpeed.bind(this))
 
     this.lightService.getCharacteristic(this.platform.Characteristic.On)
       .onSet(this.setLightOn.bind(this))
-      .onGet(this.getLightOn.bind(this))
 
-    // /**
-    //  * Updating characteristics values asynchronously.
-    //  *
-    //  * Example showing how to update the state of a Characteristic asynchronously instead
-    //  * of using the `on("get")` handlers.
-    //  * Here we change update the motion sensor trigger states on and off every 10 seconds
-    //  * the `updateCharacteristic` method.
-    //  *
-    //  */
-    // let motionDetected = false
-    // setInterval(() => {
-    //   // EXAMPLE - inverse the trigger
-    //   motionDetected = !motionDetected
+    this.tuyaClient = new TuyAPI({ id: this.deviceID, key: this.localKey, ip: this.ipAddress })
 
-    //   // push the new value to HomeKit
-    //   motionSensorOneService.updateCharacteristic(this.platform.Characteristic.MotionDetected, motionDetected)
-    //   motionSensorTwoService.updateCharacteristic(this.platform.Characteristic.MotionDetected, !motionDetected)
+    this.tuyaClient.on("connected", () => {
+      this.platform.log.debug("Tuya Device Connected ->", this.accessory.displayName)
 
-    //   this.platform.log.debug("Triggering motionSensorOneService:", motionDetected)
-    //   this.platform.log.debug("Triggering motionSensorTwoService:", !motionDetected)
-    // }, 10000)
+      this.tuyaClient.get()
+    })
+
+    this.tuyaClient.on("disconnected", () => {
+      this.platform.log.debug("Tuya Device Disconnected ->", this.accessory.displayName)
+    })
+
+    this.tuyaClient.on("error", error => {
+      this.platform.log.debug("Tuya Device Error ->", this.accessory.displayName, error)
+    })
+
+    this.tuyaClient.on("data", data => {
+      this.dps = data.dps
+
+      this.updateCharacteristics()
+
+      this.platform.log.debug("Tuya Device Data ->", this.accessory.displayName, data)
+    })
+
+    this.tuyaClient.on("dp-refresh", data => {
+      this.dps = { ...this.dps, ...data.dps }
+
+      this.updateCharacteristics()
+
+      this.platform.log.debug("Tuya Device Refresh ->", this.accessory.displayName, data)
+    })
+
+    this.tuyaClient.connect()
+  }
+
+  updateCharacteristics() {
+    this.currentFanOn().then(value => {
+      this.fanService.updateCharacteristic(this.platform.Characteristic.On, value)
+    })
+
+    this.currentFanRotationDirection().then(value => {
+      this.fanService.updateCharacteristic(this.platform.Characteristic.RotationDirection, value)
+    })
+
+    this.currentFanRotationSpeed().then(value => {
+      this.fanService.updateCharacteristic(this.platform.Characteristic.RotationSpeed, value)
+    })
+
+    this.currentLightOn().then(value => {
+      this.lightService.updateCharacteristic(this.platform.Characteristic.On, value)
+    })
   }
 
   async setFanOn(value: CharacteristicValue) {
-    // implement your own code to turn your device on/off
-    // this.exampleStates.On = value as boolean
-
     this.platform.log.debug("Set Fan Characteristic On ->", value)
+
+    this.tuyaClient.set({ dps: DATA_POINTS["on"], set: value })
   }
 
   async getFanOn(): Promise<CharacteristicValue> {
-    // const isOn = this.exampleStates.On
+    return this.tuyaClient.get().then(() => this.currentFanOn())
+  }
 
-    // this.platform.log.debug("Get Fan Characteristic On ->", isOn)
-
-    // // if you need to return an error to show the device as "Not Responding" in the Home app:
-    // // throw new this.platform.api.hap.HapStatusError(this.platform.api.hap.HAPStatus.SERVICE_COMMUNICATION_FAILURE)
-
-    // return isOn
-    return false
+  async currentFanOn(): Promise<CharacteristicValue> {
+    return this.dps[DATA_POINTS["on"]]
   }
 
   async setFanRotationDirection(value: CharacteristicValue) {
-    // implement your own code to turn your device on/off
-    // this.exampleStates.On = value as boolean
-
     this.platform.log.debug("Set Fan Characteristic Rotation Direction ->", value)
+
+    this.tuyaClient.set({ dps: DATA_POINTS["direction"], set: value === 1 ? "forward" : "reverse" })
   }
 
   async getFanRotationDirection(): Promise<CharacteristicValue> {
-    // const isOn = this.exampleStates.On
+    return this.tuyaClient.get().then(() => this.currentFanRotationDirection())
+  }
 
-    // this.platform.log.debug("Get Fan Characteristic On ->", isOn)
+  async currentFanRotationDirection(): Promise<CharacteristicValue> {
+    const value = this.dps[DATA_POINTS["direction"]]
 
-    // // if you need to return an error to show the device as "Not Responding" in the Home app:
-    // // throw new this.platform.api.hap.HapStatusError(this.platform.api.hap.HAPStatus.SERVICE_COMMUNICATION_FAILURE)
-
-    // return isOn
-    return false
+    return value === "forward" ? 1 : 0
   }
 
   async setFanRotationSpeed(value: CharacteristicValue) {
-    // implement your own code to turn your device on/off
-    // this.exampleStates.On = value as boolean
-
     this.platform.log.debug("Set Fan Characteristic Rotation Speed ->", value)
+
+    console.log("setFanRotationSpeed", value, String(Number(value) / 20))
+
+    this.tuyaClient.set({ dps: DATA_POINTS["speed"], set: String(Number(value) / 20) })
   }
 
   async getFanRotationSpeed(): Promise<CharacteristicValue> {
-    // const isOn = this.exampleStates.On
+    return this.tuyaClient.get().then(() => this.currentFanRotationSpeed())
+  }
 
-    // this.platform.log.debug("Get Fan Characteristic On ->", isOn)
+  async currentFanRotationSpeed(): Promise<CharacteristicValue> {
+    const value = this.dps[DATA_POINTS["speed"]]
 
-    // // if you need to return an error to show the device as "Not Responding" in the Home app:
-    // // throw new this.platform.api.hap.HapStatusError(this.platform.api.hap.HAPStatus.SERVICE_COMMUNICATION_FAILURE)
-
-    // return isOn
-    return false
+    return Number(value) * 20
   }
 
   async setLightOn(value: CharacteristicValue) {
-    // implement your own code to turn your device on/off
-    // this.exampleStates.On = value as boolean
-
     this.platform.log.debug("Set Lightbulb Characteristic On ->", value)
+
+    this.tuyaClient.set({ dps: DATA_POINTS["light"], set: value })
   }
 
   async getLightOn(): Promise<CharacteristicValue> {
-    // const isOn = this.exampleStates.On
-
-    // this.platform.log.debug("Get Fan Characteristic On ->", isOn)
-
-    // // if you need to return an error to show the device as "Not Responding" in the Home app:
-    // // throw new this.platform.api.hap.HapStatusError(this.platform.api.hap.HAPStatus.SERVICE_COMMUNICATION_FAILURE)
-
-    // return isOn
-    return false
+    return this.tuyaClient.get().then(() => this.currentLightOn())
   }
 
+  async currentLightOn(): Promise<CharacteristicValue> {
+    return this.dps[DATA_POINTS["light"]]
+  }
 }

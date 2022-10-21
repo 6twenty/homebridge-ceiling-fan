@@ -18,7 +18,6 @@
   "keywords": [
     "homebridge-plugin"
   ],
-  "dependencies": {},
   "devDependencies": {
     "@types/node": "^16.10.9",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
@@ -27,6 +26,7 @@
     "nodemon": "^2.0.13",
     "rimraf": "^3.0.2",
     "ts-node": "^10.3.0",
+    "tuyapi": "github:codetheweb/tuyapi",
     "typescript": "^4.4.4"
   }
 }
