@@ -20,8 +20,7 @@ export class CeilingFanAccessory {
     private readonly platform: CeilingFanPlatform,
     private readonly accessory: PlatformAccessory,
     private readonly deviceID,
-    private readonly localKey,
-    private readonly ipAddress
+    private readonly localKey
   ) {
 
     this.accessory.getService(this.platform.Service.AccessoryInformation)!
@@ -53,9 +52,7 @@ export class CeilingFanAccessory {
 
     this.tuyaClient = new TuyAPI({
       id: this.deviceID,
-      key: this.localKey,
-      ip: this.ipAddress,
-      version: "3.3"
+      key: this.localKey
     })
 
     this.tuyaClient.on("connected", () => {
@@ -88,7 +85,9 @@ export class CeilingFanAccessory {
       this.platform.log.debug("Tuya Device Refresh ->", this.accessory.displayName, data)
     })
 
-    this.tuyaClient.connect()
+    this.tuyaClient.find().then(() => {
+      this.tuyaClient.connect()
+    })
   }
 
   updateCharacteristics() {
