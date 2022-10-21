@@ -70,7 +70,7 @@ export class CeilingFanAccessory {
     })
 
     this.tuyaClient.on("data", data => {
-      this.dps = data.dps
+      this.dps = { ...this.dps, ...data.dps }
 
       this.updateCharacteristics()
 
