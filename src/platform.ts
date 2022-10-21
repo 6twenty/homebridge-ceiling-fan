@@ -40,13 +40,13 @@ export class CeilingFanPlatform implements DynamicPlatformPlugin {
     if (existingAccessory) {
       this.log.info("Restoring existing accessory from cache:", existingAccessory.displayName)
 
-      new CeilingFanAccessory(this, existingAccessory, DEVICE_ID, LOCAL_KEY, IP_ADDRESS)
+      new CeilingFanAccessory(this, existingAccessory, DEVICE_ID, LOCAL_KEY)
     } else {
       this.log.info("Adding new accessory:", "Ceiling fan")
 
       const accessory = new this.api.platformAccessory("Ceiling fan", uuid)
 
-      new CeilingFanAccessory(this, accessory, DEVICE_ID, LOCAL_KEY, IP_ADDRESS)
+      new CeilingFanAccessory(this, accessory, DEVICE_ID, LOCAL_KEY)
 
       this.api.registerPlatformAccessories(PLUGIN_NAME, PLATFORM_NAME, [accessory])
     }
