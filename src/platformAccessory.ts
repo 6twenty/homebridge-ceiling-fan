@@ -92,21 +92,10 @@ export class CeilingFanAccessory {
   }
 
   updateCharacteristics() {
-    this.currentFanOn().then(value => {
-      this.fanService.updateCharacteristic(this.platform.Characteristic.On, value)
-    })
-
-    this.currentFanRotationDirection().then(value => {
-      this.fanService.updateCharacteristic(this.platform.Characteristic.RotationDirection, value)
-    })
-
-    this.currentFanRotationSpeed().then(value => {
-      this.fanService.updateCharacteristic(this.platform.Characteristic.RotationSpeed, value)
-    })
-
-    this.currentLightOn().then(value => {
-      this.lightService.updateCharacteristic(this.platform.Characteristic.On, value)
-    })
+    this.fanService.updateCharacteristic(this.platform.Characteristic.On, this.currentFanOn())
+    this.fanService.updateCharacteristic(this.platform.Characteristic.RotationDirection, this.currentFanRotationDirection())
+    this.fanService.updateCharacteristic(this.platform.Characteristic.RotationSpeed, this.currentFanRotationSpeed())
+    this.lightService.updateCharacteristic(this.platform.Characteristic.On, this.currentLightOn())
   }
 
   async setFanOn(value: CharacteristicValue) {
@@ -119,7 +108,7 @@ export class CeilingFanAccessory {
     return this.tuyaClient.get().then(() => this.currentFanOn())
   }
 
-  async currentFanOn(): Promise<CharacteristicValue> {
+  currentFanOn(): CharacteristicValue {
     return this.dps[DATA_POINTS["on"]]
   }
 
@@ -133,7 +122,7 @@ export class CeilingFanAccessory {
     return this.tuyaClient.get().then(() => this.currentFanRotationDirection())
   }
 
-  async currentFanRotationDirection(): Promise<CharacteristicValue> {
+  currentFanRotationDirection(): CharacteristicValue {
     const value = this.dps[DATA_POINTS["direction"]]
 
     return value === "forward" ? 1 : 0
@@ -151,7 +140,7 @@ export class CeilingFanAccessory {
     return this.tuyaClient.get().then(() => this.currentFanRotationSpeed())
   }
 
-  async currentFanRotationSpeed(): Promise<CharacteristicValue> {
+  currentFanRotationSpeed(): CharacteristicValue {
     const value = this.dps[DATA_POINTS["speed"]]
 
     return Number(value) * 20
@@ -167,7 +156,7 @@ export class CeilingFanAccessory {
     return this.tuyaClient.get().then(() => this.currentLightOn())
   }
 
-  async currentLightOn(): Promise<CharacteristicValue> {
+  currentLightOn(): CharacteristicValue {
     return this.dps[DATA_POINTS["light"]]
   }
 }
