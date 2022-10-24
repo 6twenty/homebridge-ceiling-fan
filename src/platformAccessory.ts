@@ -112,6 +112,7 @@ export class CeilingFanAccessory {
   }
 
   updateFanRotationSpeed() {
+    console.log("updateFanRotationSpeed")
     this.fanService.getCharacteristic(this.platform.Characteristic.RotationSpeed).updateValue(this.currentFanRotationSpeed())
   }
 
@@ -168,6 +169,7 @@ export class CeilingFanAccessory {
   }
 
   async getFanRotationSpeed(): Promise<CharacteristicValue> {
+    console.log("getFanRotationSpeed")
     return this.tuyaClient.get().then(() => this.currentFanRotationSpeed())
   }
 
