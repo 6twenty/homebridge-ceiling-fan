@@ -76,12 +76,16 @@ export class CeilingFanAccessory {
         switch (key) {
           case DATA_POINTS["on"]:
             this.updateFanOn()
+            break
           case DATA_POINTS["direction"]:
             this.updateFanRotationDirection()
+            break
           case DATA_POINTS["speed"]:
             this.updateFanRotationSpeed()
+            break
           case DATA_POINTS["light"]:
             this.updateLightOn()
+            break
         }
       })
     }
