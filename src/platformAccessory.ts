@@ -81,6 +81,7 @@ export class CeilingFanAccessory {
             this.updateFanRotationDirection()
             break
           case DATA_POINTS["speed"]:
+            console.log("handleData", key)
             this.updateFanRotationSpeed()
             break
           case DATA_POINTS["light"]:
