@@ -91,10 +91,10 @@ export class CeilingFanAccessory {
   }
 
   updateCharacteristics() {
-    this.fanService.updateCharacteristic(this.platform.Characteristic.On, this.currentFanOn())
-    this.fanService.updateCharacteristic(this.platform.Characteristic.RotationDirection, this.currentFanRotationDirection())
-    this.fanService.updateCharacteristic(this.platform.Characteristic.RotationSpeed, this.currentFanRotationSpeed())
-    this.lightService.updateCharacteristic(this.platform.Characteristic.On, this.currentLightOn())
+    this.fanService.getCharacteristic(this.platform.Characteristic.On).updateValue(this.currentFanOn())
+    this.fanService.getCharacteristic(this.platform.Characteristic.RotationDirection).updateValue(this.currentFanRotationDirection())
+    this.fanService.getCharacteristic(this.platform.Characteristic.RotationSpeed).updateValue(this.currentFanRotationSpeed())
+    this.lightService.getCharacteristic(this.platform.Characteristic.On).updateValue(this.currentLightOn())
   }
 
   async setFanOn(value: CharacteristicValue) {
