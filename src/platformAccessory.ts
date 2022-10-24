@@ -142,6 +142,8 @@ export class CeilingFanAccessory {
   currentFanRotationSpeed(): CharacteristicValue {
     const value = this.dps[DATA_POINTS["speed"]]
 
+    console.log("currentFanRotationSpeed", value, Number(value) * 20)
+
     return Number(value) * 20
   }
 
