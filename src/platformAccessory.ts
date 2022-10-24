@@ -69,24 +69,33 @@ export class CeilingFanAccessory {
       this.platform.log.debug("Tuya Device Error ->", this.accessory.displayName, error)
     })
 
+    const handleData = data => {
+      this.dps = { ...this.dps, ...data.dps }
+
+      Object.keys(data.dps).forEach(key => {
+        switch (key) {
+          case DATA_POINTS["on"]:
+            this.updateFanOn()
+          case DATA_POINTS["direction"]:
+            this.updateFanRotationDirection()
+          case DATA_POINTS["speed"]:
+            this.updateFanRotationSpeed()
+          case DATA_POINTS["light"]:
+            this.updateLightOn()
+        }
+      })
+    }
+
     this.tuyaClient.on("data", data => {
-      setTimeout(() => {
-        this.dps = { ...this.dps, ...data.dps }
+      this.platform.log.debug("Tuya Device Data ->", this.accessory.displayName, data)
 
-        this.updateCharacteristics()
-
-        this.platform.log.debug("Tuya Device Data ->", this.accessory.displayName, data)
-      }, 1000) // Delay so as not to clash with Homekit commands
+      handleData(data)
     })
 
     this.tuyaClient.on("dp-refresh", data => {
-      setTimeout(() => {
-        this.dps = { ...this.dps, ...data.dps }
+      this.platform.log.debug("Tuya Device Refresh ->", this.accessory.displayName, data)
 
-        this.updateCharacteristics()
-
-        this.platform.log.debug("Tuya Device Refresh ->", this.accessory.displayName, data)
-      }, 1000) // Delay so as not to clash with Homekit commands
+      handleData(data)
     })
 
     this.tuyaClient.find().then(() => {
@@ -94,10 +103,19 @@ export class CeilingFanAccessory {
     })
   }
 
-  updateCharacteristics() {
+  updateFanOn() {
     this.fanService.getCharacteristic(this.platform.Characteristic.On).updateValue(this.currentFanOn())
+  }
+
+  updateFanRotationDirection() {
     this.fanService.getCharacteristic(this.platform.Characteristic.RotationDirection).updateValue(this.currentFanRotationDirection())
+  }
+
+  updateFanRotationSpeed() {
     this.fanService.getCharacteristic(this.platform.Characteristic.RotationSpeed).updateValue(this.currentFanRotationSpeed())
+  }
+
+  updateLightOn() {
     this.lightService.getCharacteristic(this.platform.Characteristic.On).updateValue(this.currentLightOn())
   }
 
