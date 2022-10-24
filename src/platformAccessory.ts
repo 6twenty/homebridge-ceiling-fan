@@ -100,10 +100,6 @@ export class CeilingFanAccessory {
   setFanOn(value: CharacteristicValue) {
     this.platform.log.debug("Set Fan Characteristic On ->", value)
 
-    // Assume success
-    this.dps[DATA_POINTS["on"]] = value
-    this.updateCharacteristics()
-
     this.tuyaClient.set({ dps: DATA_POINTS["on"], set: value })
   }
 
@@ -119,10 +115,6 @@ export class CeilingFanAccessory {
     this.platform.log.debug("Set Fan Characteristic Rotation Direction ->", value)
 
     const coercedValue = value === 1 ? "forward" : "reverse"
-
-    // Assume success
-    this.dps[DATA_POINTS["direction"]] = coercedValue
-    this.updateCharacteristics()
 
     this.tuyaClient.set({ dps: DATA_POINTS["direction"], set: coercedValue })
   }
@@ -142,9 +134,7 @@ export class CeilingFanAccessory {
 
     const coercedValue = String(Number(value) / 20)
 
-    // Assume success
-    this.dps[DATA_POINTS["speed"]] = coercedValue
-    this.updateCharacteristics()
+    console.log(`setFanRotationSpeed`, value, Number(value) / 20)
 
     this.tuyaClient.set({ dps: DATA_POINTS["speed"], set: coercedValue })
   }
@@ -156,15 +146,13 @@ export class CeilingFanAccessory {
   currentFanRotationSpeed(): CharacteristicValue {
     const value = this.dps[DATA_POINTS["speed"]]
 
+    console.log(`currentFanRotationSpeed`, value, Number(value) * 20)
+
     return Number(value) * 20
   }
 
   setLightOn(value: CharacteristicValue) {
     this.platform.log.debug("Set Lightbulb Characteristic On ->", value)
-
-    // Assume success
-    this.dps[DATA_POINTS["on"]] = value
-    this.updateCharacteristics()
 
     this.tuyaClient.set({ dps: DATA_POINTS["light"], set: value })
   }
