@@ -81,7 +81,6 @@ export class CeilingFanAccessory {
             this.updateFanRotationDirection()
             break
           case DATA_POINTS["speed"]:
-            console.log("handleData", key)
             this.updateFanRotationSpeed()
             break
           case DATA_POINTS["light"]:
@@ -117,7 +116,6 @@ export class CeilingFanAccessory {
   }
 
   updateFanRotationSpeed() {
-    console.log("updateFanRotationSpeed")
     this.fanService.getCharacteristic(this.platform.Characteristic.RotationSpeed).updateValue(this.currentFanRotationSpeed())
   }
 
@@ -168,20 +166,15 @@ export class CeilingFanAccessory {
 
     this.dps[DATA_POINTS["speed"]] = coercedValue
 
-    console.log(`setFanRotationSpeed`, value, Number(value) / 20)
-
     this.tuyaClient.set({ dps: DATA_POINTS["speed"], set: coercedValue })
   }
 
   async getFanRotationSpeed(): Promise<CharacteristicValue> {
-    console.log("getFanRotationSpeed")
     return this.tuyaClient.get().then(() => this.currentFanRotationSpeed())
   }
 
   currentFanRotationSpeed(): CharacteristicValue {
     const value = this.dps[DATA_POINTS["speed"]]
-
-    console.log(`currentFanRotationSpeed`, value, Number(value) * 20)
 
     return Number(value) * 20
   }
