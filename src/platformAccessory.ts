@@ -70,19 +70,23 @@ export class CeilingFanAccessory {
     })
 
     this.tuyaClient.on("data", data => {
-      this.dps = { ...this.dps, ...data.dps }
+      setTimeout(() => {
+        this.dps = { ...this.dps, ...data.dps }
 
-      this.updateCharacteristics()
+        this.updateCharacteristics()
 
-      this.platform.log.debug("Tuya Device Data ->", this.accessory.displayName, data)
+        this.platform.log.debug("Tuya Device Data ->", this.accessory.displayName, data)
+      }, 0)
     })
 
     this.tuyaClient.on("dp-refresh", data => {
-      this.dps = { ...this.dps, ...data.dps }
+      setTimeout(() => {
+        this.dps = { ...this.dps, ...data.dps }
 
-      this.updateCharacteristics()
+        this.updateCharacteristics()
 
-      this.platform.log.debug("Tuya Device Refresh ->", this.accessory.displayName, data)
+        this.platform.log.debug("Tuya Device Refresh ->", this.accessory.displayName, data)
+      }, 0)
     })
 
     this.tuyaClient.find().then(() => {
