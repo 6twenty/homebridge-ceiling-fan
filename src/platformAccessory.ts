@@ -89,13 +89,13 @@ export class CeilingFanAccessory {
     this.tuyaClient.on("data", data => {
       this.platform.log.debug("Tuya Device Data ->", this.accessory.displayName, data)
 
-      setTimeout(() => handleData(data), 1000) // Delay to avoid conflict with Homekit commands
+      handleData(data)
     })
 
     this.tuyaClient.on("dp-refresh", data => {
       this.platform.log.debug("Tuya Device Refresh ->", this.accessory.displayName, data)
 
-      setTimeout(() => handleData(data), 1000) // Delay to avoid conflict with Homekit commands
+      handleData(data)
     })
 
     this.tuyaClient.find().then(() => {
@@ -122,6 +122,8 @@ export class CeilingFanAccessory {
   setFanOn(value: CharacteristicValue) {
     this.platform.log.debug("Set Fan Characteristic On ->", value)
 
+    this.dps[DATA_POINTS["on"]] = value
+
     this.tuyaClient.set({ dps: DATA_POINTS["on"], set: value })
   }
 
@@ -137,6 +139,8 @@ export class CeilingFanAccessory {
     this.platform.log.debug("Set Fan Characteristic Rotation Direction ->", value)
 
     const coercedValue = value === 1 ? "forward" : "reverse"
+
+    this.dps[DATA_POINTS["direction"]] = coercedValue
 
     this.tuyaClient.set({ dps: DATA_POINTS["direction"], set: coercedValue })
   }
@@ -155,6 +159,8 @@ export class CeilingFanAccessory {
     this.platform.log.debug("Set Fan Characteristic Rotation Speed ->", value)
 
     const coercedValue = String(Number(value) / 20)
+
+    this.dps[DATA_POINTS["speed"]] = coercedValue
 
     console.log(`setFanRotationSpeed`, value, Number(value) / 20)
 
@@ -175,6 +181,8 @@ export class CeilingFanAccessory {
 
   setLightOn(value: CharacteristicValue) {
     this.platform.log.debug("Set Lightbulb Characteristic On ->", value)
+
+    this.dps[DATA_POINTS["light"]] = value
 
     this.tuyaClient.set({ dps: DATA_POINTS["light"], set: value })
   }
