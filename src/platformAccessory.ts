@@ -76,7 +76,7 @@ export class CeilingFanAccessory {
         this.updateCharacteristics()
 
         this.platform.log.debug("Tuya Device Data ->", this.accessory.displayName, data)
-      }, 0)
+      }, 1000) // Delay so as not to clash with Homekit commands
     })
 
     this.tuyaClient.on("dp-refresh", data => {
@@ -86,7 +86,7 @@ export class CeilingFanAccessory {
         this.updateCharacteristics()
 
         this.platform.log.debug("Tuya Device Refresh ->", this.accessory.displayName, data)
-      }, 0)
+      }, 1000) // Delay so as not to clash with Homekit commands
     })
 
     this.tuyaClient.find().then(() => {
