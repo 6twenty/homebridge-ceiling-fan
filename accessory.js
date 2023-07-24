@@ -65,7 +65,6 @@ export default class CeilingFanAccessory {
       if (DATA_POINTS.light in data.dps) {
         lightService.getCharacteristic(Characteristic.On).
           updateValue(this.getLightOn())
-        )
       }
     }
 
