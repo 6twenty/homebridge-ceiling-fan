@@ -7,7 +7,7 @@ const DATA_POINTS = {
   "light": "9"
 }
 
-export class CeilingFanAccessory {
+export default class CeilingFanAccessory {
   constructor(platform, accessory, deviceID) {
     this.platform = platform
     this.accessory = accessory
