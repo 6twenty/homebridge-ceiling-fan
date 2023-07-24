@@ -14,6 +14,12 @@
         "required": true,
         "description": "Plugin name as displayed in the homebridge log"
       },
+      "key": {
+        "title": "Local Key",
+        "type": "string",
+        "placeholder": "ABC123",
+        "required": true
+      },
       "devices": {
         "type": "array",
         "items": {
