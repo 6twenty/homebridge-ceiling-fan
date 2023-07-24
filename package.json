@@ -10,6 +10,7 @@
   "dependencies": {
     "tuyapi": "github:codetheweb/tuyapi"
   },
+  "homepage": "https://github.com/6twenty/homebridge-tuya-ceiling-fan",
   "repository": {
     "type": "git",
     "url": "https://github.com/6twenty/homebridge-tuya-ceiling-fan.git"
