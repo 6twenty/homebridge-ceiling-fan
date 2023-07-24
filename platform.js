@@ -1,7 +1,7 @@
 import { PLUGIN_NAME, PLATFORM_NAME } from "./settings.js"
 import CeilingFanAccessory from "./accessory.js"
 
-export class CeilingFanPlatform {
+export default class CeilingFanPlatform {
   constructor(log, config, api) {
     this.log = log
     this.api = api
