@@ -48,26 +48,23 @@ export default class CeilingFanAccessory {
       this.dps = { ...this.dps, ...data.dps }
 
       if (DATA_POINTS.on in data.dps) {
-        fanService.setCharacteristic(
-          Characteristic.On, this.getFanOn()
-        )
+        fanService.getCharacteristic(Characteristic.On).
+          updateValue(this.getFanOn())
       }
 
       if (DATA_POINTS.direction in data.dps) {
-        fanService.setCharacteristic(
-          Characteristic.RotationDirection, this.getFanRotationDirection()
-        )
+        fanService.getCharacteristic(Characteristic.RotationDirection).
+          updateValue(this.getFanRotationDirection())
       }
 
       if (DATA_POINTS.speed in data.dps) {
-        fanService.setCharacteristic(
-          Characteristic.RotationSpeed, this.getFanRotationSpeed()
-        )
+        fanService.getCharacteristic(Characteristic.RotationSpeed).
+          updateValue(this.getFanRotationSpeed())
       }
 
       if (DATA_POINTS.light in data.dps) {
-        lightService.setCharacteristic(
-          Characteristic.On, this.getLightOn()
+        lightService.getCharacteristic(Characteristic.On).
+          updateValue(this.getLightOn())
         )
       }
     }
