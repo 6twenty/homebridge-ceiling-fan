@@ -1,5 +1,5 @@
 {
-  "pluginAlias": "TuyaCeilingFan",
+  "pluginAlias": "tuya-ceiling-fan",
   "pluginType": "platform",
   "singular": true,
   "headerDisplay": "Homebridge plugin for Tuya ceiling fans",
