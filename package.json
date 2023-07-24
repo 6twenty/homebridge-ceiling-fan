@@ -6,7 +6,7 @@
   "engines": {
     "homebridge": "*"
   },
-  "devDependencies": {
+  "dependencies": {
     "tuyapi": "github:codetheweb/tuyapi"
   }
 }
