@@ -1,4 +1,4 @@
-import { PLUGIN_NAME, PLATFORM_NAME } from "./settings.js"
+import { PLUGIN_VERSION, PLUGIN_NAME, PLATFORM_NAME } from "./settings.js"
 import CeilingFanAccessory from "./accessory.js"
 
 export default class CeilingFanPlatform {
@@ -8,6 +8,8 @@ export default class CeilingFanPlatform {
     this.key = config.key
     this.devices = config.devices
     this.accessories = []
+
+    log.debug(`Version: ${PLUGIN_VERSION}`)
 
     api.on("didFinishLaunching", () => {
       this.addOrRestoreAccessories()
