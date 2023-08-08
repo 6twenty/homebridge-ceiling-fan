@@ -40,7 +40,7 @@
             "version": {
               "title": "API version (use if auto-discovery fails)",
               "type": "string",
-              "placeholder": "3.3"
+              "placeholder": "3.1"
             }
           }
         }
