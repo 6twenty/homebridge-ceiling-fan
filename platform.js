@@ -5,7 +5,6 @@ export default class CeilingFanPlatform {
   constructor(log, config, api) {
     this.log = log
     this.api = api
-    this.key = config.key
     this.devices = config.devices
     this.accessories = []
 

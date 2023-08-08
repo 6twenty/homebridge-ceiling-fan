@@ -8,9 +8,10 @@ const DATA_POINTS = {
 }
 
 export default class CeilingFanAccessory {
-  constructor(platform, accessory, { id, ip, version}) {
+  constructor(platform, accessory, { key, id, ip, version}) {
     this.platform = platform
     this.accessory = accessory
+    this.deviceKey = key
     this.deviceID = id
     this.deviceIP = ip ? ip : null
     this.deviceVersion = version ? version : null
@@ -71,7 +72,7 @@ export default class CeilingFanAccessory {
     }
 
     const apiOpts = {
-      key: this.platform.key,
+      key: this.deviceKey,
       id: this.deviceID
     }
 
