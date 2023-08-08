@@ -31,6 +31,16 @@
               "type": "string",
               "placeholder": "ABC123",
               "required": true
+            },
+            "ip": {
+              "title": "Device IP address (use if auto-discovery fails)",
+              "type": "string",
+              "placeholder": "123.234.345.456"
+            },
+            "version": {
+              "title": "Device API version (use if auto-discovery fails)",
+              "type": "string",
+              "placeholder": "3.3"
             }
           }
         }
@@ -49,7 +59,9 @@
           "key": "devices",
           "type": "array",
           "items": [
-            "devices[].id"
+            "devices[].id",
+            "devices[].ip",
+            "devices[].version"
           ]
         }
       ]

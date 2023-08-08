@@ -8,10 +8,12 @@ const DATA_POINTS = {
 }
 
 export default class CeilingFanAccessory {
-  constructor(platform, accessory, deviceID) {
+  constructor(platform, accessory, { id, ip, version}) {
     this.platform = platform
     this.accessory = accessory
-    this.deviceID = deviceID
+    this.deviceID = id
+    this.deviceIP = ip ? ip : null
+    this.deviceVersion = version ? version : null
 
     accessory.on("identify", () => {
       this.platform.log(`${accessory.displayName} identified!`)
@@ -68,10 +70,20 @@ export default class CeilingFanAccessory {
       }
     }
 
-    this.tuyaClient = new TuyAPI({
-      id: this.deviceID,
-      key: this.platform.key
-    })
+    const apiOpts = {
+      key: this.platform.key,
+      id: this.deviceID
+    }
+
+    if (this.deviceIP) {
+      apiOpts.ip = this.deviceIP
+    }
+
+    if (this.deviceVersion) {
+      apiOpts.version = this.deviceVersion
+    }
+
+    this.tuyaClient = new TuyAPI(apiOpts)
 
     this.tuyaClient.on("connected", () => {
       this.platform.log.debug("Tuya Device Connected ->", this.accessory.displayName)

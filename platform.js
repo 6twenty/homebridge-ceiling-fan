@@ -32,7 +32,7 @@ export default class CeilingFanPlatform {
       if (existingAccessory) {
         this.log.info("Restoring existing accessory from cache:", existingAccessory.displayName)
 
-        new CeilingFanAccessory(this, existingAccessory, device.id)
+        new CeilingFanAccessory(this, existingAccessory, device)
       } else {
         const displayName = `Ceiling Fan ${device.id}`
 
@@ -42,7 +42,7 @@ export default class CeilingFanPlatform {
 
         this.accessories.push(accessory)
 
-        new CeilingFanAccessory(this, accessory, device.id)
+        new CeilingFanAccessory(this, accessory, device)
 
         this.api.registerPlatformAccessories(
           PLUGIN_NAME, PLATFORM_NAME, [accessory]
