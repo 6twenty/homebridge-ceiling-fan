@@ -151,13 +151,11 @@ export default class CeilingFanAccessory {
   }
 
   setFanRotationSpeed(value) {
-    const coercedValue = String(Number(value) / 20)
+    this.dps[DATA_POINTS.speed] = value
 
-    this.dps[DATA_POINTS.speed] = coercedValue
+    this.platform.log.debug("Set Fan Characteristic Rotation Speed ->", value)
 
-    this.platform.log.debug("Set Fan Characteristic Rotation Speed ->", value, coercedValue)
-
-    this.tuyaClient.set({ dps: DATA_POINTS.speed, set: coercedValue, shouldWaitForResponse: false })
+    this.tuyaClient.set({ dps: DATA_POINTS.speed, set: value, shouldWaitForResponse: false })
   }
 
   getFanRotationSpeed() {
