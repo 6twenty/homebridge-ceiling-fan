@@ -120,7 +120,7 @@ export default class CeilingFanAccessory {
 
     this.platform.log.debug("Set Fan Characteristic On ->", value)
 
-    this.tuyaClient.set({ dps: DATA_POINTS.on, set: value })
+    this.tuyaClient.set({ dps: DATA_POINTS.on, set: value, shouldWaitForResponse: false })
   }
 
   getFanOn() {
@@ -138,7 +138,7 @@ export default class CeilingFanAccessory {
 
     this.platform.log.debug("Set Fan Characteristic Rotation Direction ->", value, coercedValue)
 
-    this.tuyaClient.set({ dps: DATA_POINTS.direction, set: coercedValue })
+    this.tuyaClient.set({ dps: DATA_POINTS.direction, set: coercedValue, shouldWaitForResponse: false })
   }
 
   getFanRotationDirection() {
@@ -157,7 +157,7 @@ export default class CeilingFanAccessory {
 
     this.platform.log.debug("Set Fan Characteristic Rotation Speed ->", value, coercedValue)
 
-    this.tuyaClient.set({ dps: DATA_POINTS.speed, set: coercedValue })
+    this.tuyaClient.set({ dps: DATA_POINTS.speed, set: coercedValue, shouldWaitForResponse: false })
   }
 
   getFanRotationSpeed() {
@@ -173,7 +173,7 @@ export default class CeilingFanAccessory {
 
     this.platform.log.debug("Set Lightbulb Characteristic On ->", value)
 
-    this.tuyaClient.set({ dps: DATA_POINTS.light, set: value })
+    this.tuyaClient.set({ dps: DATA_POINTS.light, set: value, shouldWaitForResponse: false })
   }
 
   getLightOn() {
