@@ -41,7 +41,7 @@ export default class CeilingFanAccessory {
       onSet((value) => this.setFanRotationDirection(value))
 
     fanService.getCharacteristic(Characteristic.RotationSpeed).
-      setProps({ minValue: 0, maxValue: 5, minStep: 1 }).
+      setProps({ minValue: 0, maxValue: 100, minStep: 20 }).
       onSet((value) => this.setFanRotationSpeed(value))
 
     lightService.getCharacteristic(Characteristic.On).
@@ -151,19 +151,22 @@ export default class CeilingFanAccessory {
   }
 
   setFanRotationSpeed(value) {
-    this.dps[DATA_POINTS.speed] = value
+    const coercedValue = String(Number(value) / 20)
 
-    this.platform.log.debug("Set Fan Characteristic Rotation Speed ->", value)
+    this.dps[DATA_POINTS.speed] = coercedValue
 
-    this.tuyaClient.set({ dps: DATA_POINTS.speed, set: value, shouldWaitForResponse: false })
+    this.platform.log.debug("Set Fan Characteristic Rotation Speed ->", value, coercedValue)
+
+    this.tuyaClient.set({ dps: DATA_POINTS.speed, set: coercedValue, shouldWaitForResponse: false })
   }
 
   getFanRotationSpeed() {
-    const value = Number(this.dps[DATA_POINTS.speed])
+    const value = this.dps[DATA_POINTS.speed]
+    const coercedValue = Number(value) * 20
 
-    this.platform.log.debug("Get Fan Characteristic Rotation Speed ->", value)
+    this.platform.log.debug("Get Fan Characteristic Rotation Speed ->", value, coercedValue)
 
-    return value
+    return coercedValue
   }
 
   setLightOn(value) {
